@@ -9,6 +9,7 @@ import {
   subscribeToWithdrawals,
   subscribeToProfile,
   subscribeToMonthlyReports,
+  subscribeToFinancialMethod,
   type Transaction,
   type CategoryMeta,
   type SavingsEntry,
@@ -25,6 +26,7 @@ interface FinanceState {
   withdrawals: SavingsEntry[];
   profile: { name: string; email: string };
   monthlyReports: MonthlyReport[];
+  financialMethod: string | null;
   loading: boolean;
 }
 
@@ -61,6 +63,7 @@ const FinanceContext = createContext<FinanceState>({
   withdrawals: [],
   profile: { name: "Usuario", email: "" },
   monthlyReports: [],
+  financialMethod: null,
   loading: true,
 });
 
@@ -96,6 +99,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     withdrawals: [],
     profile: { name: "Usuario", email: "" },
     monthlyReports: [],
+    financialMethod: null,
     loading: true,
   });
 
@@ -117,9 +121,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         contributions: [],
         withdrawals: [],
         profile: { name: isGuest ? "Invitado" : "Usuario", email: isGuest ? "No registrado" : "" },
-        monthlyReports: [],
-        loading: false,
-      }));
+      monthlyReports: [],
+      financialMethod: null,
+      loading: false,
+    }));
       return;
     }
 
@@ -133,6 +138,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       subscribeToWithdrawals(uid, (w) => update("withdrawals", w)),
       subscribeToProfile(uid, (p) => update("profile", p)),
       subscribeToMonthlyReports(uid, (r) => update("monthlyReports", r)),
+      subscribeToFinancialMethod(uid, (m) => update("financialMethod", m)),
     ];
 
     // Mark as loaded after short delay

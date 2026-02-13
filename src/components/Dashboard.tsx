@@ -6,12 +6,13 @@ import { Plus, TrendingUp, TrendingDown, Edit2, Trash2 } from "lucide-react";
 import { deleteTransaction } from "@/lib/firebase";
 import SummaryCard from "./SummaryCard";
 import TransactionModal from "./TransactionModal";
+import BudgetProgress from "./BudgetProgress";
 import { toast } from "sonner";
 
 const fmt = (n: number) =>
   "$" + n.toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<{ onSelectMethod?: () => void }> = ({ onSelectMethod }) => {
   const { uid, isGuest } = useAuth();
   const { transactions } = useFinance();
   const { incomes, expenses, available, netSavings } = useAggregate();
@@ -97,6 +98,9 @@ const Dashboard: React.FC = () => {
           variant="savings"
         />
       </div>
+
+      {/* Budget Progress by Method */}
+      <BudgetProgress onChangeMethod={onSelectMethod} />
 
       {/* Quick Actions */}
       <div className="flex gap-3 mb-8">

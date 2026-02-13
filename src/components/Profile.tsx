@@ -2,16 +2,18 @@ import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFinance, useAggregate } from "@/contexts/FinanceContext";
 import { logout, resetUserData } from "@/lib/firebase";
-import { LogOut, RotateCcw, User, Mail, TrendingUp, TrendingDown, PiggyBank } from "lucide-react";
+import { LogOut, RotateCcw, User, Mail, TrendingUp, TrendingDown, PiggyBank, Settings2 } from "lucide-react";
+import { getMethodById } from "@/lib/financialMethodsRegistry";
 import { toast } from "sonner";
 
 const fmt = (n: number) =>
   "$" + n.toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const Profile: React.FC = () => {
+const Profile: React.FC<{ onChangeMethod?: () => void }> = ({ onChangeMethod }) => {
   const { uid, isGuest } = useAuth();
-  const { profile, goal } = useFinance();
+  const { profile, goal, financialMethod } = useFinance();
   const { incomes, expenses, netSavings, totalContributions } = useAggregate();
+  const method = financialMethod ? getMethodById(financialMethod) : null;
 
   const expenseRatio = incomes > 0 ? ((expenses / incomes) * 100).toFixed(1) : "0";
   const goalRatio = goal && goal > 0 ? ((totalContributions / goal) * 100).toFixed(1) : "—";
@@ -83,6 +85,23 @@ const Profile: React.FC = () => {
 
       {/* Actions */}
       <div className="space-y-3">
+        {onChangeMethod && (
+          <button
+            onClick={onChangeMethod}
+            className="w-full flex items-center gap-3 bg-card border border-border rounded-2xl p-4 hover:bg-secondary/50 transition text-left"
+          >
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Settings2 className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <div className="font-semibold text-sm">Método financiero</div>
+              <div className="text-xs text-muted-foreground">
+                {method ? `${method.icon} ${method.name}` : "Sin seleccionar"} — Toca para cambiar
+              </div>
+            </div>
+          </button>
+        )}
+
         <button
           onClick={handleReset}
           className="w-full flex items-center gap-3 bg-card border border-border rounded-2xl p-4 hover:bg-secondary/50 transition text-left"

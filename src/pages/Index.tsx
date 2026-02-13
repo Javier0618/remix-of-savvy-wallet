@@ -7,6 +7,7 @@ import Reports from "@/components/Reports";
 import Savings from "@/components/Savings";
 import SmartAdvice from "@/components/SmartAdvice";
 import Profile from "@/components/Profile";
+import MethodSelector from "@/components/MethodSelector";
 import BottomNav, { type TabId } from "@/components/BottomNav";
 import { Home, BarChart3, PiggyBank, Lightbulb, User, LogOut } from "lucide-react";
 import { logout } from "@/lib/firebase";
@@ -21,9 +22,9 @@ const desktopTabs: { id: TabId; label: string; icon: React.ElementType }[] = [
 
 const Index: React.FC = () => {
   const { user, loading: authLoading, isGuest } = useAuth();
-  const { loading: finLoading } = useFinance();
+  const { loading: finLoading, financialMethod } = useFinance();
   const [activeTab, setActiveTab] = useState<TabId>("inicio");
-
+  const [showMethodSelector, setShowMethodSelector] = useState(false);
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -58,13 +59,29 @@ const Index: React.FC = () => {
     );
   }
 
+  // Show method selector for first-time users or when requested
+  const needsMethodSelection = !isGuest && !financialMethod && !showMethodSelector;
+
+  if (needsMethodSelection || showMethodSelector) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="max-w-lg w-full">
+          <MethodSelector
+            currentMethodId={financialMethod}
+            onComplete={() => setShowMethodSelector(false)}
+          />
+        </div>
+      </div>
+    );
+  }
+
   const renderTab = () => {
     switch (activeTab) {
-      case "inicio": return <Dashboard />;
+      case "inicio": return <Dashboard onSelectMethod={() => setShowMethodSelector(true)} />;
       case "informe": return <Reports />;
       case "ahorro": return <Savings />;
       case "consejos": return <SmartAdvice />;
-      case "perfil": return <Profile />;
+      case "perfil": return <Profile onChangeMethod={() => setShowMethodSelector(true)} />;
     }
   };
 

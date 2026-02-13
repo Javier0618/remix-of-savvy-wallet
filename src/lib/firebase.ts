@@ -283,6 +283,18 @@ export const subscribeToMonthlyReports = (uid: string, cb: (reports: MonthlyRepo
   });
 };
 
+// Financial method helpers
+export const setFinancialMethod = async (uid: string, methodId: string) => {
+  await setDoc(doc(db, "users", uid, "settings", "financialMethod"), { id: methodId }, { merge: true });
+};
+
+export const subscribeToFinancialMethod = (uid: string, cb: (methodId: string | null) => void) => {
+  return onSnapshot(doc(db, "users", uid, "settings", "financialMethod"), (snap) => {
+    const data = snap.data();
+    cb(data?.id ?? null);
+  });
+};
+
 // Reset
 export const resetUserData = async (uid: string) => {
   const cols = ["transactions", "savings_contributions", "savings_withdrawals", "monthly_reports"];

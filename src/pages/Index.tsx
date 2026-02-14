@@ -6,17 +6,19 @@ import Dashboard from "@/components/Dashboard";
 import Reports from "@/components/Reports";
 import Savings from "@/components/Savings";
 import SmartAdvice from "@/components/SmartAdvice";
+import ScheduledActions from "@/components/ScheduledActions";
 import Profile from "@/components/Profile";
 import MethodSelector from "@/components/MethodSelector";
 import BottomNav, { type TabId } from "@/components/BottomNav";
-import { Home, BarChart3, PiggyBank, Lightbulb, User, LogOut } from "lucide-react";
+import { Home, BarChart3, PiggyBank, CalendarClock, User, LogOut } from "lucide-react";
 import { logout } from "@/lib/firebase";
+import { useScheduledExecutor } from "@/hooks/useScheduledExecutor";
 
 const desktopTabs: { id: TabId; label: string; icon: React.ElementType }[] = [
   { id: "inicio", label: "Inicio", icon: Home },
   { id: "informe", label: "Informe", icon: BarChart3 },
   { id: "ahorro", label: "Ahorro", icon: PiggyBank },
-  { id: "consejos", label: "Consejos", icon: Lightbulb },
+  { id: "auto", label: "Automatizaciones", icon: CalendarClock },
   { id: "perfil", label: "Perfil", icon: User },
 ];
 
@@ -25,6 +27,7 @@ const Index: React.FC = () => {
   const { loading: finLoading, financialMethod } = useFinance();
   const [activeTab, setActiveTab] = useState<TabId>("inicio");
   const [showMethodSelector, setShowMethodSelector] = useState(false);
+  useScheduledExecutor();
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -80,7 +83,7 @@ const Index: React.FC = () => {
       case "inicio": return <Dashboard onSelectMethod={() => setShowMethodSelector(true)} />;
       case "informe": return <Reports />;
       case "ahorro": return <Savings />;
-      case "consejos": return <SmartAdvice />;
+      case "auto": return <ScheduledActions />;
       case "perfil": return <Profile onChangeMethod={() => setShowMethodSelector(true)} />;
     }
   };

@@ -295,6 +295,59 @@ export const subscribeToFinancialMethod = (uid: string, cb: (methodId: string | 
   });
 };
 
+// Scheduled actions helpers
+export interface ScheduledAction {
+  id: string;
+  type: "debt" | "savings";
+  name: string;
+  amount: number;
+  days: number[]; // e.g. [16, 30]
+  category: string;
+  active: boolean;
+  created: string;
+}
+
+export const addScheduledAction = async (uid: string, action: Omit<ScheduledAction, "id">) => {
+  await addDoc(collection(db, "users", uid, "scheduled_actions"), {
+    ...action,
+    created: new Date().toISOString(),
+  });
+};
+
+export const updateScheduledAction = async (uid: string, actionId: string, data: Partial<ScheduledAction>) => {
+  await updateDoc(doc(db, "users", uid, "scheduled_actions", actionId), data);
+};
+
+export const deleteScheduledAction = async (uid: string, actionId: string) => {
+  await deleteDoc(doc(db, "users", uid, "scheduled_actions", actionId));
+};
+
+export const subscribeToScheduledActions = (uid: string, cb: (actions: ScheduledAction[]) => void) => {
+  const q = query(collection(db, "users", uid, "scheduled_actions"), orderBy("created", "desc"));
+  return onSnapshot(q, (snap) => {
+    cb(snap.docs.map((d) => ({ id: d.id, ...d.data() } as ScheduledAction)));
+  });
+};
+
+// Execution log to prevent duplicate runs
+export const getLastExecution = async (uid: string, actionId: string, day: number, month: number, year: number) => {
+  const q2 = query(
+    collection(db, "users", uid, "scheduled_executions"),
+    where("actionId", "==", actionId),
+    where("day", "==", day),
+    where("month", "==", month),
+    where("year", "==", year)
+  );
+  const snap = await getDocs(q2);
+  return snap.docs.length > 0;
+};
+
+export const logExecution = async (uid: string, actionId: string, day: number, month: number, year: number) => {
+  await addDoc(collection(db, "users", uid, "scheduled_executions"), {
+    actionId, day, month, year, executed: new Date().toISOString(),
+  });
+};
+
 // Reset
 export const resetUserData = async (uid: string) => {
   const cols = ["transactions", "savings_contributions", "savings_withdrawals", "monthly_reports"];

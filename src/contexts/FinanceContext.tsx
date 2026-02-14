@@ -10,10 +10,12 @@ import {
   subscribeToProfile,
   subscribeToMonthlyReports,
   subscribeToFinancialMethod,
+  subscribeToScheduledActions,
   type Transaction,
   type CategoryMeta,
   type SavingsEntry,
   type MonthlyReport,
+  type ScheduledAction,
 } from "@/lib/firebase";
 
 interface FinanceState {
@@ -27,6 +29,7 @@ interface FinanceState {
   profile: { name: string; email: string };
   monthlyReports: MonthlyReport[];
   financialMethod: string | null;
+  scheduledActions: ScheduledAction[];
   loading: boolean;
 }
 
@@ -64,6 +67,7 @@ const FinanceContext = createContext<FinanceState>({
   profile: { name: "Usuario", email: "" },
   monthlyReports: [],
   financialMethod: null,
+  scheduledActions: [],
   loading: true,
 });
 
@@ -100,6 +104,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     profile: { name: "Usuario", email: "" },
     monthlyReports: [],
     financialMethod: null,
+    scheduledActions: [],
     loading: true,
   });
 
@@ -121,10 +126,11 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         contributions: [],
         withdrawals: [],
         profile: { name: isGuest ? "Invitado" : "Usuario", email: isGuest ? "No registrado" : "" },
-      monthlyReports: [],
-      financialMethod: null,
-      loading: false,
-    }));
+        monthlyReports: [],
+        financialMethod: null,
+        scheduledActions: [],
+        loading: false,
+      }));
       return;
     }
 
@@ -139,6 +145,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       subscribeToProfile(uid, (p) => update("profile", p)),
       subscribeToMonthlyReports(uid, (r) => update("monthlyReports", r)),
       subscribeToFinancialMethod(uid, (m) => update("financialMethod", m)),
+      subscribeToScheduledActions(uid, (a) => update("scheduledActions", a)),
     ];
 
     // Mark as loaded after short delay

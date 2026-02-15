@@ -126,8 +126,8 @@ const Index: React.FC = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-60">
-          <div className="container max-w-3xl mx-auto px-4 py-6">
+        <main className="flex-1 md:ml-60 w-full">
+          <div className="max-w-3xl mx-auto px-4 py-6">
             {renderTab()}
           </div>
         </main>

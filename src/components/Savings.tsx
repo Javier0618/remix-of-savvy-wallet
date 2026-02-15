@@ -71,18 +71,18 @@ const Savings: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 relative">
           <div className="text-[0.65rem] font-extrabold uppercase text-muted-foreground mb-1">Meta</div>
-          <div className="text-base sm:text-lg font-extrabold text-foreground">{fmt(goal || 0)}</div>
+          <div className="text-lg sm:text-xl font-extrabold text-foreground">{fmt(goal || 0)}</div>
           <div className="absolute top-3 right-3 w-8 h-8 bg-destructive rounded-xl flex items-center justify-center">
             <Target className="w-4 h-4 text-destructive-foreground" />
           </div>
         </div>
         <div className="bg-success/10 border border-success/20 rounded-2xl p-4">
           <div className="text-[0.65rem] font-extrabold uppercase text-muted-foreground mb-1">Ahorro Neto</div>
-          <div className="text-base sm:text-lg font-extrabold text-foreground">{fmt(netSavings)}</div>
+          <div className="text-lg sm:text-xl font-extrabold text-foreground">{fmt(netSavings)}</div>
         </div>
         <div className="bg-warning/10 border border-warning/20 rounded-2xl p-4">
           <div className="text-[0.65rem] font-extrabold uppercase text-muted-foreground mb-1">Aportes</div>
-          <div className="text-base sm:text-lg font-extrabold text-foreground">{fmt(totalContributions)}</div>
+          <div className="text-lg sm:text-xl font-extrabold text-foreground">{fmt(totalContributions)}</div>
         </div>
       </div>
 

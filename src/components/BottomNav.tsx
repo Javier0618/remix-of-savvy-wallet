@@ -1,7 +1,7 @@
 import React from "react";
-import { Home, BarChart3, PiggyBank, CalendarClock, User } from "lucide-react";
+import { Home, BarChart3, PiggyBank, Lightbulb, CalendarClock, User } from "lucide-react";
 
-export type TabId = "inicio" | "informe" | "ahorro" | "auto" | "perfil";
+export type TabId = "inicio" | "informe" | "ahorro" | "consejos" | "auto" | "perfil";
 
 interface BottomNavProps {
   activeTab: TabId;
@@ -12,6 +12,7 @@ const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
   { id: "inicio", label: "Inicio", icon: Home },
   { id: "informe", label: "Informe", icon: BarChart3 },
   { id: "ahorro", label: "Ahorro", icon: PiggyBank },
+  { id: "consejos", label: "Consejos", icon: Lightbulb },
   { id: "auto", label: "Auto", icon: CalendarClock },
   { id: "perfil", label: "Perfil", icon: User },
 ];

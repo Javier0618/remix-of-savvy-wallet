@@ -68,7 +68,7 @@ const Savings: React.FC = () => {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 relative">
           <div className="text-[0.65rem] font-extrabold uppercase text-muted-foreground mb-1">Meta</div>
           <div className="text-sm sm:text-lg font-extrabold text-foreground truncate">{fmt(goal || 0)}</div>

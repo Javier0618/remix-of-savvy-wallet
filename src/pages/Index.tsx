@@ -81,7 +81,7 @@ const Index: React.FC = () => {
 
   const renderTab = () => {
     switch (activeTab) {
-      case "inicio": return <Dashboard onSelectMethod={() => setShowMethodSelector(true)} />;
+      case "inicio": return <Dashboard onSelectMethod={() => setShowMethodSelector(true)} onViewReports={() => setActiveTab("informe")} />;
       case "informe": return <Reports />;
       case "ahorro": return <Savings />;
       case "consejos": return <SmartAdvice />;

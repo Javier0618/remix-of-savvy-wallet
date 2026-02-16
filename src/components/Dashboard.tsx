@@ -7,12 +7,13 @@ import { deleteTransaction } from "@/lib/firebase";
 import SummaryCard from "./SummaryCard";
 import TransactionModal from "./TransactionModal";
 import BudgetProgress from "./BudgetProgress";
+import WeeklySummary from "./WeeklySummary";
 import { toast } from "sonner";
 
 const fmt = (n: number) =>
   "$" + n.toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const Dashboard: React.FC<{ onSelectMethod?: () => void }> = ({ onSelectMethod }) => {
+const Dashboard: React.FC<{ onSelectMethod?: () => void; onViewReports?: () => void }> = ({ onSelectMethod, onViewReports }) => {
   const { uid, isGuest } = useAuth();
   const { transactions } = useFinance();
   const { incomes, expenses, available, netSavings } = useAggregate();
@@ -98,6 +99,9 @@ const Dashboard: React.FC<{ onSelectMethod?: () => void }> = ({ onSelectMethod }
           variant="savings"
         />
       </div>
+
+      {/* Weekly Summary */}
+      <WeeklySummary onViewReports={onViewReports} />
 
       {/* Budget Progress by Method */}
       <BudgetProgress onChangeMethod={onSelectMethod} />

@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useFinance, useAggregate } from "@/contexts/FinanceContext";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import SummaryCard from "./SummaryCard";
-import { TrendingUp, TrendingDown, PiggyBank, Wallet } from "lucide-react";
+import { TrendingUp, TrendingDown, PiggyBank, Wallet, FileDown, FileSpreadsheet } from "lucide-react";
+import { generatePDF } from "@/lib/exportPDF";
+import { generateExcel } from "@/lib/exportExcel";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const fmt = (n: number) =>
   "$" + n.toLocaleString("es-CO", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
@@ -12,6 +16,34 @@ const COLORS = ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444"
 const Reports: React.FC = () => {
   const { transactions, goal } = useFinance();
   const { incomes, expenses, totalContributions, netSavings } = useAggregate();
+  const { isGuest } = useAuth();
+  const { profile } = useFinance();
+
+  // Monthly comparison data (last 6 months)
+  const monthlyData = useMemo(() => {
+    const now = new Date();
+    const months: { label: string; incomes: number; expenses: number }[] = [];
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      const label = d.toLocaleDateString("es-CO", { month: "short" }).replace(".", "");
+
+      let inc = 0;
+      let exp = 0;
+      transactions.forEach((tx) => {
+        const txDate = new Date(tx.date);
+        const txKey = `${txDate.getFullYear()}-${String(txDate.getMonth() + 1).padStart(2, "0")}`;
+        if (txKey === monthKey) {
+          if (tx.type === "income") inc += Number(tx.amount);
+          else exp += Number(tx.amount);
+        }
+      });
+
+      months.push({ label: label.charAt(0).toUpperCase() + label.slice(1), incomes: inc, expenses: exp });
+    }
+    return months;
+  }, [transactions]);
 
   // Expense by category
   const expenseByCat: Record<string, number> = {};
@@ -39,11 +71,59 @@ const Reports: React.FC = () => {
     { name: "Aportado", value: totalContributions },
   ];
 
+  const currentMonthLabel = new Date().toLocaleDateString("es-CO", { month: "long", year: "numeric" });
+
+  const handleExportPDF = () => {
+    if (isGuest) return toast.error("Regístrate para exportar reportes");
+    generatePDF({
+      incomes,
+      expenses,
+      netSavings,
+      totalContributions,
+      goal,
+      transactions,
+      profileName: profile.name,
+      monthLabel: currentMonthLabel,
+    });
+    toast.success("Reporte PDF descargado");
+  };
+
+  const handleExportExcel = () => {
+    if (isGuest) return toast.error("Regístrate para exportar reportes");
+    generateExcel({
+      incomes,
+      expenses,
+      netSavings,
+      totalContributions,
+      goal,
+      transactions,
+      profileName: profile.name,
+      monthLabel: currentMonthLabel,
+    });
+    toast.success("Archivo Excel descargado");
+  };
+
   return (
     <div className="animate-fade-in-up">
-      <div className="mb-6">
-        <h1 className="text-2xl font-extrabold tracking-tight">Informe financiero</h1>
-        <p className="text-sm text-muted-foreground">Tu situación en números</p>
+      <div className="mb-6 flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight">Informe financiero</h1>
+          <p className="text-sm text-muted-foreground">Tu situación en números</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExportPDF}
+            className="flex items-center gap-1.5 px-3 py-2 bg-destructive/10 text-destructive border border-destructive/20 rounded-xl text-xs font-bold hover:bg-destructive/20 transition"
+          >
+            <FileDown className="w-3.5 h-3.5" /> PDF
+          </button>
+          <button
+            onClick={handleExportExcel}
+            className="flex items-center gap-1.5 px-3 py-2 bg-success/10 text-success border border-success/20 rounded-xl text-xs font-bold hover:bg-success/20 transition"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" /> Excel
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-6">
@@ -51,6 +131,30 @@ const Reports: React.FC = () => {
         <SummaryCard label="Gastos" value={fmt(expenses)} icon={<TrendingDown className="w-5 h-5 text-destructive" />} variant="expense" />
         <SummaryCard label="Ahorro Neto" value={fmt(netSavings)} icon={<PiggyBank className="w-5 h-5 text-primary" />} variant="savings" />
         <SummaryCard label="Aportes" value={fmt(totalContributions)} icon={<Wallet className="w-5 h-5 text-info" />} variant="available" />
+      </div>
+
+      {/* Monthly Comparison */}
+      <div className="bg-card border border-border rounded-2xl p-5 mb-6">
+        <h3 className="font-bold mb-1">Comparativo mensual</h3>
+        <p className="text-xs text-muted-foreground mb-4">Ingresos vs Gastos — últimos 6 meses</p>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart data={monthlyData} barGap={4}>
+            <XAxis dataKey="label" tick={{ fill: "#94a3b8", fontSize: 12 }} />
+            <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} tickFormatter={(v) => "$" + (v / 1000).toFixed(0) + "k"} />
+            <Tooltip
+              formatter={(v: number) => fmt(v)}
+              contentStyle={{
+                background: "hsl(222 35% 12%)",
+                border: "1px solid hsl(220 13% 18%)",
+                borderRadius: "12px",
+                color: "#f1f5f9",
+              }}
+            />
+            <Legend />
+            <Bar dataKey="incomes" name="Ingresos" fill="#10b981" radius={[6, 6, 0, 0]} barSize={18} />
+            <Bar dataKey="expenses" name="Gastos" fill="#f87171" radius={[6, 6, 0, 0]} barSize={18} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4 mb-6">

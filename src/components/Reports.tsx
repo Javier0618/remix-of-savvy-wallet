@@ -150,7 +150,6 @@ const Reports: React.FC = () => {
                 color: "#f1f5f9",
               }}
               labelStyle={{ color: "#94a3b8" }}
-              itemStyle={{ color: "#f1f5f9" }}
             />
             <Legend />
             <Bar dataKey="incomes" name="Ingresos" fill="#10b981" radius={[6, 6, 0, 0]} barSize={18} />

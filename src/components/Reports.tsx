@@ -207,9 +207,9 @@ const Reports: React.FC = () => {
           <p className="text-center text-muted-foreground py-8 text-sm">No hay gastos registrados</p>
         ) : (
           <>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie data={categoryData} cx="50%" cy="50%" outerRadius={110} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                <Pie data={categoryData} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={true} fontSize={11}>
                   {categoryData.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />
                   ))}

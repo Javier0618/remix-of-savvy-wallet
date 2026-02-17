@@ -97,7 +97,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-xl flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-xl flex items-end sm:items-center justify-center z-[60] p-0 sm:p-4">
       <div className="w-full sm:max-w-md bg-card border border-border rounded-t-3xl sm:rounded-3xl p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-lg">

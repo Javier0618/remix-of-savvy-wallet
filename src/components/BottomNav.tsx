@@ -19,7 +19,7 @@ const tabs: { id: TabId; label: string; icon: React.ElementType }[] = [
 
 const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
   return (
-    <nav className="fixed bottom-5 left-5 right-5 h-[70px] bg-card/80 backdrop-blur-xl flex justify-around items-center rounded-3xl border border-border shadow-2xl z-50 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 h-[70px] bg-card/80 backdrop-blur-xl flex justify-around items-center border-t border-border shadow-2xl z-50 md:hidden pb-[env(safe-area-inset-bottom)]">
       {tabs.map(({ id, label, icon: Icon }) => (
         <button
           key={id}

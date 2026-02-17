@@ -9,6 +9,7 @@ import {
 } from "@/lib/firebase";
 import { X, Plus } from "lucide-react";
 import { toast } from "sonner";
+import IconPicker, { ICON_MAP } from "./IconPicker";
 
 interface TransactionModalProps {
   open: boolean;
@@ -85,7 +86,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   const handleAddCategory = async () => {
     if (!newCatName.trim()) return;
     if (uid && !isGuest) {
-      await addCategory(uid, type, newCatName.trim(), newCatIcon || "📌");
+      await addCategory(uid, type, newCatName.trim(), newCatIcon || "Star");
     }
     setCategory(newCatName.trim());
     setShowNewCat(false);
@@ -144,26 +145,33 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           Categoría
         </label>
         <div className="grid grid-cols-4 gap-2 mb-4">
-          {categories.map((cat) => (
-            <button
-              key={cat.name}
-              onClick={() => setCategory(cat.name)}
-              className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all ${
-                category === cat.name
-                  ? "bg-primary/15 border-primary shadow-lg shadow-primary/10"
-                  : "bg-secondary/30 border-border hover:bg-secondary/50"
-              }`}
-            >
-              <span className="text-xl">{cat.icon}</span>
-              <span
-                className={`text-[0.6rem] font-bold truncate w-full text-center ${
-                  category === cat.name ? "text-foreground" : "text-muted-foreground"
+          {categories.map((cat) => {
+            const LucideIcon = ICON_MAP[cat.icon];
+            return (
+              <button
+                key={cat.name}
+                onClick={() => setCategory(cat.name)}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all ${
+                  category === cat.name
+                    ? "bg-primary/15 border-primary shadow-lg shadow-primary/10"
+                    : "bg-secondary/30 border-border hover:bg-secondary/50"
                 }`}
               >
-                {cat.name}
-              </span>
-            </button>
-          ))}
+                {LucideIcon ? (
+                  <LucideIcon className="w-5 h-5 text-foreground" />
+                ) : (
+                  <span className="text-xl">{cat.icon}</span>
+                )}
+                <span
+                  className={`text-[0.6rem] font-bold truncate w-full text-center ${
+                    category === cat.name ? "text-foreground" : "text-muted-foreground"
+                  }`}
+                >
+                  {cat.name}
+                </span>
+              </button>
+            );
+          })}
           <button
             onClick={() => setShowNewCat(!showNewCat)}
             className="flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-dashed border-muted-foreground/30 hover:border-muted-foreground/50 transition"
@@ -182,13 +190,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
               onChange={(e) => setNewCatName(e.target.value)}
               className="flex-1 bg-secondary/50 border border-border rounded-xl px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
             />
-            <input
-              type="text"
-              placeholder="Emoji"
-              value={newCatIcon}
-              onChange={(e) => setNewCatIcon(e.target.value)}
-              className="w-16 bg-secondary/50 border border-border rounded-xl px-3 py-2 text-sm text-center outline-none focus:border-primary"
-            />
+            <IconPicker value={newCatIcon} onChange={setNewCatIcon} />
             <button onClick={handleAddCategory} className="bg-primary text-primary-foreground px-4 rounded-xl text-sm font-bold">
               OK
             </button>

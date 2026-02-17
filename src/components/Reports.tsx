@@ -149,6 +149,8 @@ const Reports: React.FC = () => {
                 borderRadius: "12px",
                 color: "#f1f5f9",
               }}
+              labelStyle={{ color: "#94a3b8" }}
+              itemStyle={{ color: "#f1f5f9" }}
             />
             <Legend />
             <Bar dataKey="incomes" name="Ingresos" fill="#10b981" radius={[6, 6, 0, 0]} barSize={18} />
@@ -169,7 +171,7 @@ const Reports: React.FC = () => {
                   <Cell key={i} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip formatter={(v: number) => fmt(v)} contentStyle={{ background: "hsl(222 35% 12%)", border: "1px solid hsl(220 13% 18%)", borderRadius: "12px", color: "#f1f5f9" }} />
+              <Tooltip formatter={(v: number) => fmt(v)} contentStyle={{ background: "hsl(222 35% 12%)", border: "1px solid hsl(220 13% 18%)", borderRadius: "12px", color: "#f1f5f9" }} labelStyle={{ color: "#94a3b8" }} itemStyle={{ color: "#f1f5f9" }} />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
@@ -188,7 +190,7 @@ const Reports: React.FC = () => {
             <BarChart data={goalData}>
               <XAxis dataKey="name" tick={{ fill: "#94a3b8", fontSize: 12 }} />
               <YAxis tick={{ fill: "#94a3b8", fontSize: 12 }} tickFormatter={(v) => "$" + v.toLocaleString()} />
-              <Tooltip formatter={(v: number) => fmt(v)} contentStyle={{ background: "hsl(222 35% 12%)", border: "1px solid hsl(220 13% 18%)", borderRadius: "12px", color: "#f1f5f9" }} />
+              <Tooltip formatter={(v: number) => fmt(v)} contentStyle={{ background: "hsl(222 35% 12%)", border: "1px solid hsl(220 13% 18%)", borderRadius: "12px", color: "#f1f5f9" }} labelStyle={{ color: "#94a3b8" }} itemStyle={{ color: "#f1f5f9" }} />
               <Bar dataKey="value" radius={[8, 8, 0, 0]} barSize={40}>
                 <Cell fill="rgba(59,130,246,0.5)" />
                 <Cell fill="#10b981" />
@@ -213,7 +215,7 @@ const Reports: React.FC = () => {
                     <Cell key={i} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v: number) => fmt(v)} contentStyle={{ background: "hsl(222 35% 12%)", border: "1px solid hsl(220 13% 18%)", borderRadius: "12px", color: "#f1f5f9" }} />
+                <Tooltip formatter={(v: number) => fmt(v)} contentStyle={{ background: "hsl(222 35% 12%)", border: "1px solid hsl(220 13% 18%)", borderRadius: "12px", color: "#f1f5f9" }} labelStyle={{ color: "#94a3b8" }} itemStyle={{ color: "#f1f5f9" }} />
               </PieChart>
             </ResponsiveContainer>
             <div className="mt-4 space-y-3">
